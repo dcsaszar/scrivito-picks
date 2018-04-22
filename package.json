@@ -1,0 +1,33 @@
+{
+  "dependencies": {
+    "futil-js": ">=1.42.0 <2.0.0",
+    "react": ">=15.0.0",
+    "scrivito": ">=1.0.0 <2.0.0"
+  },
+  "description": "A visual style picker for Scrivito detail views",
+  "devDependencies": {
+    "typescript": ">=2.8.3"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "keywords": [
+    "enum",
+    "multienum",
+    "picker",
+    "scrivito",
+    "style",
+    "visual",
+    "widget"
+  ],
+  "license": "MIT",
+  "main": "dist/index.js",
+  "name": "scrivito-picks",
+  "repository": "github:dcsaszar/scrivito-picks",
+  "scripts": {
+    "prepare": "tsc",
+    "watch": "tsc --watch"
+  },
+  "version": "1.0.0"
+}
