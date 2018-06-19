@@ -1,7 +1,6 @@
 {
   "dependencies": {
-    "futil-js": ">=1.42.0 <2.0.0",
-    "react": ">=15.0.0"
+    "futil-js": ">=1.42.0 <2.0.0"
   },
   "description": "A visual style picker for Scrivito detail views",
   "devDependencies": {
@@ -24,6 +23,7 @@
   "main": "dist/index.js",
   "name": "scrivito-picks",
   "peerDependencies": {
+    "react": "*",
     "scrivito": "*"
   },
   "repository": "github:dcsaszar/scrivito-picks",
