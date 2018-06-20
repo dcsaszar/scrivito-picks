@@ -40,8 +40,9 @@ function Attribute({ options, ...props }) {
   );
 }
 
-const Item = Scrivito.connect(({ attribute, options, properties, page, value, widget, ...props }) =>
+const Item = Scrivito.connect(({ attribute, obj, options, properties, value, widget, ...props }) =>
 {
+  const page = obj;
   const content = page || widget;
   const currentValue = content.get(attribute);
   const isMulti = Array.isArray(currentValue);
