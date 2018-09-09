@@ -34,7 +34,7 @@ Scrivito.provideEditingConfig('HeadlineWidget', {
 
 ### Parameters for createComponent
 
-`attributes` - Attribute options `[{attribute: 'myEnum', values: ... }, ...]`. Can ba a plain object for a single attribute. See options.
+`attributes` - Attribute options `[{attribute: 'myEnum', values: ... }, ...]`. Can be a plain object for a single attribute. See options.
 
 ### Options
 
