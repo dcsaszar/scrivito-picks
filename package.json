@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "futil-js": ">=1.42.0 <2.0.0"
+    "lodash-es": "^4.17.11"
   },
   "description": "A visual style picker for Scrivito detail views",
   "devDependencies": {
@@ -31,5 +31,5 @@
     "prepare": "tsc",
     "watch": "tsc --watch"
   },
-  "version": "1.0.3"
+  "version": "1.0.4"
 }

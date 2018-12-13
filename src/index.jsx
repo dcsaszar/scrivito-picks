@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as Scrivito from "scrivito";
-import { autoLabel, callOrReturn } from "futil-js";
+import { isFunction, startCase } from "lodash-es";
 import STYLE from "./style.js";
 
 export { createScrivitoPicksComponent as createComponent };
@@ -125,7 +125,11 @@ const Item = Scrivito.connect(
 );
 
 function sentenceCase(text) {
-  return autoLabel(text).replace(/ \w(?![A-Z])/g, t => t.toLowerCase());
+  return startCase(text).replace(/ \w(?![A-Z])/g, t => t.toLowerCase());
+}
+
+function callOrReturn(fnOrValue, args) {
+  return isFunction(fnOrValue) ? fnOrValue(args) : fnOrValue;
 }
 
 let id = 0;
