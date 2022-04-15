@@ -5,32 +5,69 @@ import STYLE from "./style.js";
 
 export { createScrivitoPicksComponent as createComponent };
 
-function createScrivitoPicksComponent(attributes) {
+interface AttributeOptions {
+  attribute: string;
+  previewClassName?: CallbackOr<string>;
+  previewStyle?: CallbackOr<React.CSSProperties>;
+  previewText?: CallbackOr<JSX.Element>;
+  renderPreview?: JSX.Element;
+  thumbnail?: CallbackOr<string>;
+  title?: string | false;
+  values: ValueProperties[];
+}
+
+interface ValueProperties {
+  previewClassName?: CallbackOr<string>;
+  previewStyle?: CallbackOr<React.CSSProperties>;
+  previewText?: CallbackOr<JSX.Element>;
+  renderPreview?: JSX.Element;
+  thumbnail?: CallbackOr<string>;
+  title?: string;
+  value: Value;
+}
+
+type CallbackOr<T> = T | Callback<T>;
+type Callback<T> = (a: CallbackParameters) => T;
+
+interface CallbackParameters {
+  content?: Scrivito.Obj | Scrivito.Widget;
+  page?: Scrivito.Obj;
+  value: Value;
+  widget?: Scrivito.Widget;
+}
+
+type Value = string | boolean | null;
+type CurrentValue = string | string[] | boolean | null;
+
+function createScrivitoPicksComponent(
+  attributes: AttributeOptions | AttributeOptions[]
+) {
   const name = `ScrivitoPicks${++id}`;
-  Scrivito.registerComponent(name, props => (
+  Scrivito.registerComponent(name, (props) => (
     <Picks attributes={attributes} {...props} />
   ));
   return name;
 }
 
-function Picks({ attributes, ...props }) {
+function Picks({
+  attributes,
+  ...props
+}: {
+  attributes: AttributeOptions | AttributeOptions[];
+}) {
   return (
     <>
       <style children={STYLE} />
       {Array.isArray(attributes) ? (
-        <AttributesArray attributes={attributes} {...props} />
+        attributes.map((a, i) => <Attribute key={i} options={a} {...props} />)
       ) : (
-        <Attribute options={attribute} {...props} />
+        <Attribute options={attributes} {...props} />
       )}
     </>
   );
 }
 
-function AttributesArray({ attributes, ...props }) {
-  return attributes.map((a, i) => <Attribute key={i} options={a} {...props} />);
-}
-
-function Attribute({ options, ...props }) {
+function Attribute({ options, ...props }: { options: AttributeOptions }) {
   const attribute = options.attribute;
   return (
     <div className="spcks-section">
@@ -42,9 +79,9 @@ function Attribute({ options, ...props }) {
       )}
       <ul className="spcks-ul">
         {options.values &&
-          options.values.map(properties => (
+          options.values.map((properties) => (
             <Item
-              key={properties.value}
+              key={String(properties.value)}
               value={properties.value}
               attribute={attribute}
               options={options}
@@ -58,17 +95,30 @@ function Attribute({ options, ...props }) {
 }
 
 const Item = Scrivito.connect(
-  ({ attribute, obj, options, properties, value, widget, ...props }) => {
+  ({
+    attribute,
+    obj,
+    options,
+    properties,
+    value,
+    widget,
+  }: {
+    attribute: string;
+    obj?: Scrivito.Obj;
+    options: AttributeOptions;
+    properties: ValueProperties;
+    value: Value;
+    widget?: Scrivito.Widget;
+  }) => {
     const page = obj;
-    const content = page || widget;
-    const currentValue = content.get(attribute);
-    const isMulti = Array.isArray(currentValue);
-    const isActive = isMulti
-      ? currentValue.indexOf(value) !== -1
+    const content = (page || widget)!;
+    const currentValue = content.get(attribute) as CurrentValue;
+    const isActive = Array.isArray(currentValue)
+      ? currentValue.indexOf(value as string) !== -1
       : value === currentValue;
     const callbackArgs = { content, page, value, widget };
     const className = callOrReturn(
-      properties.previewClassName || options.previewClassName || value,
+      properties.previewClassName || options.previewClassName || String(value),
       callbackArgs
     );
     const innerText = callOrReturn(
@@ -90,12 +140,12 @@ const Item = Scrivito.connect(
       callbackArgs
     );
     const liClassName = isActive ? "spcks-active" : undefined;
-    const toggleValue = isMulti
+    const toggleValue = Array.isArray(currentValue)
       ? isActive
-        ? currentValue.filter(v => v !== value)
-        : [...currentValue, value]
+        ? (currentValue as string[]).filter((v) => v !== value)
+        : [...currentValue, value as string]
       : isActive
-      ? null
+      ? value === false || null
       : value;
 
     return (
@@ -117,7 +167,7 @@ const Item = Scrivito.connect(
           <div className="spcks-name">
             {properties.title || sentenceCase(value)}
           </div>
-          {isMulti && <div className="spcks-select" />}
+          {Array.isArray(currentValue) && <div className="spcks-select" />}
         </div>
       </li>
     );
@@ -125,11 +175,13 @@ const Item = Scrivito.connect(
 );
 
 function sentenceCase(text) {
-  return startCase(text).replace(/ \w(?![A-Z])/g, t => t.toLowerCase());
+  return startCase(text).replace(/ \w(?![A-Z])/g, (t) => t.toLowerCase());
 }
 
-function callOrReturn(fnOrValue, args) {
-  return isFunction(fnOrValue) ? fnOrValue(args) : fnOrValue;
+function callOrReturn<T>(fnOrValue: Callback<T> | T, args: CallbackParameters) {
+  return isFunction(fnOrValue)
+    ? (fnOrValue as Callback<T>)(args)
+    : (fnOrValue as T);
 }
 
 let id = 0;
