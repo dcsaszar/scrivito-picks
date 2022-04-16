@@ -38,7 +38,7 @@ ul.spcks-ul li:hover {
 }
 
 ul.spcks-ul li.spcks-active {
-  box-shadow: 0 0 0 3px #658b51, 0 0 4px 6px hsla(0,0%,100%,.3);
+  box-shadow: 0 0 0 3px #426698, 0 0 4px 6px hsla(0,0%,100%,.3);
 }
 
 .spcks-preview {
@@ -63,7 +63,7 @@ ul.spcks-ul li.spcks-active {
 }
 
 .spcks-active .spcks-meta {
-  background: #7ea46a;
+  background: #426698;
   color: #fff;
 }
 
@@ -84,24 +84,25 @@ ul.spcks-ul li.spcks-active {
   width: 12px;
   height: 12px;
   border: 1px solid #ddd;
-  border-radius: 2px;
+  border-radius: 1px;
 }
 
 .spcks-active .spcks-select {
-  background-color: #fff;
   border-color: #fff;
 }
 
 .spcks-active .spcks-select:after {
+  color: #426698;
   content: '';
   display: block;
+  filter: drop-shadow(1px 0) drop-shadow(-0.7px -0.7px);
   position: relative;
   box-sizing: border-box;
   width: 6px;
   height: 12px;
   top: -3px;
-  left: 3px;
-  border: solid #7ea46a;
+  left: 3.5px;
+  border: solid #fff;
   border-width: 0 2.5px 2.5px 0;
   transform: rotate(45deg);
 }
