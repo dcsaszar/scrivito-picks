@@ -3,8 +3,6 @@ import * as Scrivito from "scrivito";
 import { isFunction, startCase } from "lodash-es";
 import { STYLE } from "./style";
 
-export { createScrivitoPicksComponent as createComponent };
-
 interface AttributeOptions {
   attribute: string;
   previewClassName?: CallbackOr<string>;
@@ -39,14 +37,28 @@ interface CallbackParameters {
 type Value = string | boolean | null;
 type CurrentValue = string | string[] | boolean | null;
 
-function createScrivitoPicksComponent(
+/**
+ * Helper for registering a Scrivito Picks component as a Scrivito Extension.
+ * @returns An auto-generated properties group component name
+ * @see https://www.scrivito.com/js-sdk/provideEditingConfig#referencing-a-component-by-its-name
+ */
+export function createComponent(
   attributes: AttributeOptions | AttributeOptions[]
 ) {
   const name = `ScrivitoPicks${++id}`;
-  Scrivito.registerComponent(name, (props) => (
-    <Picks attributes={attributes} {...props} />
-  ));
+  Scrivito.registerComponent(name, component(attributes));
   return name;
+}
+
+/**
+ * Get a Scrivito Picks component.
+ * @returns A properties group component
+ * @requires `propertiesGroups.key`
+ * @requires Scrivito SDK 1.27.0
+ * @see https://www.scrivito.com/js-sdk/provideEditingConfig#providing-the-component-directly
+ */
+export function component(attributes: AttributeOptions | AttributeOptions[]) {
+  return (props) => <Picks attributes={attributes} {...props} />;
 }
 
 const Picks = Scrivito.connect(
@@ -55,6 +67,8 @@ const Picks = Scrivito.connect(
     ...props
   }: {
     attributes: AttributeOptions | AttributeOptions[];
+    obj?: Scrivito.Obj;
+    widget?: Scrivito.Widget;
   }) => {
     const theme = Scrivito.uiContext ? Scrivito.uiContext()?.theme : "light";
 
