@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as Scrivito from "scrivito";
 import { isFunction, startCase } from "lodash-es";
-import STYLE from "./style.js";
+import { STYLE } from "./style";
 
 export { createScrivitoPicksComponent as createComponent };
 
@@ -49,23 +49,27 @@ function createScrivitoPicksComponent(
   return name;
 }
 
-function Picks({
-  attributes,
-  ...props
-}: {
-  attributes: AttributeOptions | AttributeOptions[];
-}) {
-  return (
-    <>
-      <style children={STYLE} />
-      {Array.isArray(attributes) ? (
-        attributes.map((a, i) => <Attribute key={i} options={a} {...props} />)
-      ) : (
-        <Attribute options={attributes} {...props} />
-      )}
-    </>
-  );
-}
+const Picks = Scrivito.connect(
+  ({
+    attributes,
+    ...props
+  }: {
+    attributes: AttributeOptions | AttributeOptions[];
+  }) => {
+    const theme = Scrivito.uiContext ? Scrivito.uiContext()?.theme : "light";
+
+    return !theme ? null : (
+      <>
+        <style>{STYLE[theme]}</style>
+        {Array.isArray(attributes) ? (
+          attributes.map((a, i) => <Attribute key={i} options={a} {...props} />)
+        ) : (
+          <Attribute options={attributes} {...props} />
+        )}
+      </>
+    );
+  }
+);
 
 function Attribute({ options, ...props }: { options: AttributeOptions }) {
   const attribute = options.attribute;
