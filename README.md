@@ -1,6 +1,6 @@
 ## Scrivito Picks
 
-A visual style picker for Scrivito `enum` and `multienum` attributes.
+A visual style picker for Scrivito `boolean`, `enum`, and `multienum` attributes.
 
 ![](/screenshots.png)
 
@@ -12,39 +12,60 @@ npm install scrivito-picks
 
 ### Usage
 
+`ScrivitoPicks.createComponent` registers an editor component and returns a component name. Use this for Scrivito SDK < 1.27.0:
+
 ```jsx
 // HeadlineWidgetEditingConfig.js
 import * as Scrivito from "scrivito";
 import * as ScrivitoPicks from "scrivito-picks";
 
-// Add a "My Custom Style" style picker tab to the headline widget:
+// Add a "My custom style" style picker tab to the headline widget:
 Scrivito.provideEditingConfig("HeadlineWidget", {
   title: "Headline",
   propertiesGroups: [
     {
-      title: "My Custom Style",
+      title: "My custom style",
       component: ScrivitoPicks.createComponent([
-        /* attributes */
+        /* my custom attributes */
       ]),
     },
   ],
 });
 ```
 
-- `ScrivitoPicks.createComponent` creates the editor component.
-- The return value of `createComponent` is a value suitable for the `Scrivito.provideEditingConfig` call.
-- Pass this value to `Scrivito.provideEditingConfig`, as a `component` in `propertiesGroups`.
+With Scrivito SDK ≥ 1.27.0, `ScrivitoPicks.component` can be used as an alternative. It returns a component. The properties group `key` must be set:
 
-### Parameters for createComponent
+```jsx
+import * as Scrivito from "scrivito";
+import * as ScrivitoPicks from "scrivito-picks";
 
-`attributes` - Attribute options `[{attribute: 'myEnum', values: ... }, ...]`. Can be a plain object for a single attribute. See options.
+Scrivito.provideEditingConfig("HeadlineWidget", {
+  propertiesGroups: [
+    {
+      title: "My custom style",
+      key: "my-custom-style",
+      component: ScrivitoPicks.component([
+        /* ... */
+      ]),
+    },
+  ],
+});
+```
 
-### Options
+#### Arguments
+
+Both `createComponent` and `component` take a single argument.
+
+`attributes` - An array of attribute options `[{attribute: 'myEnum', values: ... }, ...]`. For a single attribute, a plain attribute options object can be passed instead of a one-element array.
+
+#### Attribute options
+
+An object describing how an attribute is presented.
 
 | Option             | Description                                                                                          |
 | ------------------ | ---------------------------------------------------------------------------------------------------- |
 | `attribute`        | The attribute name.                                                                                  |
-| `values`           | An array describing the available items and their representation. See values properties.             |
+| `values`           | An array describing the available items and their representation. See value properties.              |
 | `title`            | The attribute title. If `false`, no title will be shown. Default: the sentence cased attribute name. |
 | `previewClassName` | A callback returning the `className` of a value preview element.                                     |
 | `previewStyle`     | A callback returning the `style` of a value preview element.                                         |
@@ -52,9 +73,11 @@ Scrivito.provideEditingConfig("HeadlineWidget", {
 | `renderPreview`    | A render callback for a value preview. If set, `preview*` options are ignored.                       |
 | `thumbnail`        | A callback returning the URL of the thumbnail image for a value.                                     |
 
-For callbacks, see callback parameters.
+If an option has a static value, you can use a string (or an object for the `previewStyle` property) instead of a callback.
 
-#### Values properties
+#### Value properties
+
+An object that describes an attribute value. Individual attribute options can be overridden per value.
 
 | Property           | Description                                                               |
 | ------------------ | ------------------------------------------------------------------------- |
@@ -68,6 +91,8 @@ For callbacks, see callback parameters.
 
 #### Callback parameters
 
+Many options can be configured as a callback. The callback receives an object with the following parameters:
+
 | Parameter | Description                                                                             |
 | --------- | --------------------------------------------------------------------------------------- |
 | `value`   | The attribute value of the item.                                                        |
@@ -75,16 +100,13 @@ For callbacks, see callback parameters.
 | `widget`  | The `Scrivito.Widget` containing the edited attribute. `undefined` when editing a page. |
 | `content` | Convenience parameter for `(page \|\| widget)`.                                         |
 
-Instead of a callback, you can also pass a string (or an object for the `previewStyle` property).
-
 ### Examples
 
-#### Options for a single attribute
+#### A single attribute
 
 ```jsx
-// Create a picker for the `alignment` attribute.
-// We offer three available values.
-// Each value is represented by a Font Awesome icon.
+// Create a picker for the `alignment` enum attribute.
+// There are three options, each option is represented by a Font Awesome icon.
 component: ScrivitoPicks.createComponent({
   attribute: 'alignment',
   values: [
@@ -96,7 +118,8 @@ component: ScrivitoPicks.createComponent({
 ```
 
 ```jsx
-// Configure custom titles, and a callback that saves us from having to specify icons individually:
+// Same as the first example, but with custom options titles.
+// The Font Awesome icon is computed by a callback.
 component: ScrivitoPicks.createComponent({
   attribute: "alignment",
   previewClassName: ({ value }) => `fa fa-4x fa-align-${value}`,
@@ -110,7 +133,7 @@ component: ScrivitoPicks.createComponent({
 ```
 
 ```jsx
-// Render custom previews, using JSX:
+// Render custom preview components:
 component: ScrivitoPicks.createComponent({
   attribute: "alignment",
   values: [{ value: "left" }, { value: "center" }, { value: "right" }],
@@ -118,10 +141,10 @@ component: ScrivitoPicks.createComponent({
 });
 ```
 
-#### Options for multiple attributes
+#### Multiple attributes
 
 ```jsx
-// Create a picker for two attributes, alignment and heading style:
+// Create a picker for two attributes, `alignment` and `style`:
 component: ScrivitoPicks.createComponent([
   {
     attribute: "alignment",
