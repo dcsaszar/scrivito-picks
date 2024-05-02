@@ -205,7 +205,9 @@ const DARK = css`
   }
 `;
 
-export const STYLE = { light: BASE, dark: BASE + DARK };
+export function style(theme: "dark" | "light") {
+  return theme === "dark" ? BASE + DARK : BASE;
+}
 
 function css(s) {
   return s[0];

@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as Scrivito from "scrivito";
 import { isFunction, startCase } from "lodash-es";
-import { STYLE } from "./style";
+import { style } from "./style";
 
 interface AttributeOptions {
   attribute: string;
@@ -74,7 +74,7 @@ const Picks = Scrivito.connect(
 
     return !theme ? null : (
       <>
-        <style>{STYLE[theme]}</style>
+        <style>{style(theme)}</style>
         {Array.isArray(attributes) ? (
           attributes.map((a, i) => <Attribute key={i} options={a} {...props} />)
         ) : (
