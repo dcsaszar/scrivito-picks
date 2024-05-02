@@ -4,8 +4,9 @@ const BASE = css`
   }
 
   .spcks-label {
-    color: #444;
-    font: bold 13px Helvetica Neue, Helvetica, Arial, sans-serif;
+    color: #272d37;
+    font-size: 14px;
+    font-weight: bold;
     padding: 4px 3px 6px;
   }
 
@@ -32,7 +33,7 @@ const BASE = css`
   }
 
   ul.spcks-ul li:hover {
-    box-shadow: 0 0 7px 0 #555;
+    box-shadow: 0 0 7px 0 #3a3453;
   }
 
   ul.spcks-ul li.spcks-active {
@@ -51,7 +52,7 @@ const BASE = css`
   }
 
   .spcks-meta {
-    color: #555;
+    color: #3a3453;
     background: #fff;
     border-radius: 0 0 4px 4px;
     height: 30%;
@@ -110,7 +111,7 @@ const BASE = css`
 
 const DARK = css`
   body {
-    background: #3f3f3f;
+    background: #1d2229;
   }
 
   .spcks-section {
@@ -120,7 +121,7 @@ const DARK = css`
 
   ul.spcks-ul li {
     aspect-ratio: 13 / 10;
-    background: #3f3f3f;
+    background: #1d2229;
     box-shadow: 0 0 4px 1px rgb(0 0 0 / 10%);
     height: auto;
     margin: 0 3px;
@@ -185,11 +186,11 @@ const DARK = css`
   }
 
   .spcks-active .spcks-preview:after {
-    border-color: #4a72aa;
+    border-color: #426698;
   }
 
   .spcks-active .spcks-meta {
-    background: #4a72aa;
+    background: #426698;
   }
 
   .spcks-name {
