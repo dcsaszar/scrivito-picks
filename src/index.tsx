@@ -7,8 +7,8 @@ interface AttributeOptions {
   attribute: string;
   previewClassName?: CallbackOr<string>;
   previewStyle?: CallbackOr<React.CSSProperties>;
-  previewText?: CallbackOr<JSX.Element>;
-  renderPreview?: JSX.Element;
+  previewText?: CallbackOr<React.JSX.Element>;
+  renderPreview?: React.JSX.Element;
   thumbnail?: CallbackOr<string>;
   title?: string | false;
   values: ValueProperties[];
@@ -17,8 +17,8 @@ interface AttributeOptions {
 interface ValueProperties {
   previewClassName?: CallbackOr<string>;
   previewStyle?: CallbackOr<React.CSSProperties>;
-  previewText?: CallbackOr<JSX.Element>;
-  renderPreview?: JSX.Element;
+  previewText?: CallbackOr<React.JSX.Element>;
+  renderPreview?: React.JSX.Element;
   thumbnail?: CallbackOr<string>;
   title?: string;
   value: Value;
@@ -43,8 +43,8 @@ type CurrentValue = string | string[] | boolean | null;
  * @see https://www.scrivito.com/js-sdk/provideEditingConfig#referencing-a-component-by-its-name
  */
 export function createComponent(
-  attributes: AttributeOptions | AttributeOptions[]
-) {
+  attributes: AttributeOptions | AttributeOptions[],
+): string {
   const name = `ScrivitoPicks${++id}`;
   Scrivito.registerComponent(name, component(attributes));
   return name;
@@ -57,7 +57,12 @@ export function createComponent(
  * @requires Scrivito SDK 1.27.0
  * @see https://www.scrivito.com/js-sdk/provideEditingConfig#providing-the-component-directly
  */
-export function component(attributes: AttributeOptions | AttributeOptions[]) {
+export function component(
+  attributes: AttributeOptions | AttributeOptions[],
+): (props: {
+  obj?: Scrivito.Obj;
+  widget?: Scrivito.Widget;
+}) => React.JSX.Element {
   return (props) => <Picks attributes={attributes} {...props} />;
 }
 
@@ -82,7 +87,7 @@ const Picks = Scrivito.connect(
         )}
       </>
     );
-  }
+  },
 );
 
 function Attribute({ options, ...props }: { options: AttributeOptions }) {
@@ -137,25 +142,25 @@ const Item = Scrivito.connect(
     const callbackArgs = { content, page, value, widget };
     const className = callOrReturn(
       properties.previewClassName || options.previewClassName || String(value),
-      callbackArgs
+      callbackArgs,
     );
     const innerText = callOrReturn(
       properties.previewText || options.previewText,
-      callbackArgs
+      callbackArgs,
     );
     const style = callOrReturn(
       properties.previewStyle || options.previewStyle,
-      callbackArgs
+      callbackArgs,
     );
     const thumbnail = callOrReturn(
       properties.thumbnail || options.thumbnail,
-      callbackArgs
+      callbackArgs,
     );
     const preview = callOrReturn(
       properties.renderPreview || options.renderPreview || (
         <div className={className} children={innerText} style={style} />
       ),
-      callbackArgs
+      callbackArgs,
     );
     const liClassName = isActive ? "spcks-active" : undefined;
     const toggleValue = Array.isArray(currentValue)
@@ -163,8 +168,8 @@ const Item = Scrivito.connect(
         ? (currentValue as string[]).filter((v) => v !== value)
         : [...currentValue, value as string]
       : isActive
-      ? value === false || null
-      : value;
+        ? value === false || null
+        : value;
 
     return (
       <li
@@ -183,16 +188,16 @@ const Item = Scrivito.connect(
         </div>
         <div className="spcks-meta">
           <div className="spcks-name">
-            {properties.title || sentenceCase(value)}
+            {properties.title || sentenceCase(String(value))}
           </div>
           {Array.isArray(currentValue) && <div className="spcks-select" />}
         </div>
       </li>
     );
-  }
+  },
 );
 
-function sentenceCase(text) {
+function sentenceCase(text: string) {
   return startCase(text).replace(/ \w(?![A-Z])/g, (t) => t.toLowerCase());
 }
 
