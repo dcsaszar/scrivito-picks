@@ -37,7 +37,9 @@ const BASE = css`
   }
 
   ul.spcks-ul li.spcks-active {
-    box-shadow: 0 0 0 3px #426698, 0 0 4px 6px hsla(0, 0%, 100%, 0.3);
+    box-shadow:
+      0 0 0 3px #426698,
+      0 0 4px 6px hsla(0, 0%, 100%, 0.3);
   }
 
   .spcks-preview {
@@ -161,7 +163,9 @@ const DARK = css`
   .spcks-label {
     color: #eee;
     margin: 0 5px;
-    text-shadow: 0 1px 1px rgb(0 0 0 / 30%), 0 0 4px rgb(0 0 0 / 20%);
+    text-shadow:
+      0 1px 1px rgb(0 0 0 / 30%),
+      0 0 4px rgb(0 0 0 / 20%);
   }
 
   .spcks-preview {
@@ -205,10 +209,10 @@ const DARK = css`
   }
 `;
 
-export function style(theme: "dark" | "light") {
+export function style(theme: "dark" | "light"): string {
   return theme === "dark" ? BASE + DARK : BASE;
 }
 
-function css(s) {
+function css(s: TemplateStringsArray) {
   return s[0];
 }
